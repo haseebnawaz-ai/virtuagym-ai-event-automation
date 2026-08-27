@@ -1,0 +1,626 @@
+{
+  "name": "Virtuagym Event Automation Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "virtuagym-events",
+        "options": {}
+      },
+      "id": "f33586f5-b03a-47f3-a1cf-cb8619477605",
+      "name": "Webhook - Virtuagym Event",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -704,
+        304
+      ],
+      "webhookId": "virtuagym-events-webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "// TEST MODE: Pick ONE fake event to simulate by changing 'eventType' below.\n// Once real Virtuagym webhooks are connected, DELETE this node and use the\n// real webhook body data instead.\n//\n// Valid eventType values to test each rule:\n// 'trial_expired_no_membership'\n// 'no_checkin_14_days'\n// 'birthday_today'\n// 'new_member_onboarding'\n// 'membership_expiring_soon'\n// 'new_lead'\n\nconst eventType = 'trial_expired_no_membership'; // <-- change this line to test a different rule\n\nconst fakeEvents = {\n  trial_expired_no_membership: {\n    eventType: 'trial_expired_no_membership',\n    member_id: 'TG-10234',\n    name: 'Sara de Vries',\n    email: 'sara.devries.demo@example.com',\n    trial_start_date: '2026-06-20',\n    trial_end_date: '2026-06-27',\n    has_purchased_membership: false\n  },\n  no_checkin_14_days: {\n    eventType: 'no_checkin_14_days',\n    member_id: 'TG-10567',\n    name: 'Mark Jansen',\n    email: 'mark.jansen.demo@example.com',\n    last_checkin_date: '2026-06-15',\n    membership_type: 'Standard Monthly'\n  },\n  birthday_today: {\n    eventType: 'birthday_today',\n    member_id: 'TG-10889',\n    name: 'Lotte Bakker',\n    email: 'lotte.bakker.demo@example.com',\n    birthday: '2026-06-30',\n    membership_type: 'Premium Annual'\n  },\n  new_member_onboarding: {\n    eventType: 'new_member_onboarding',\n    member_id: 'TG-11023',\n    name: 'Tom de Wit',\n    email: 'tom.dewit.demo@example.com',\n    join_date: '2026-06-30',\n    membership_type: 'Premium 12-Month',\n    goals: 'Build muscle, improve general fitness'\n  },\n  membership_expiring_soon: {\n    eventType: 'membership_expiring_soon',\n    member_id: 'TG-09812',\n    name: 'Anna Visser',\n    email: 'anna.visser.demo@example.com',\n    membership_type: 'Standard Monthly',\n    expiry_date: '2026-07-05'\n  },\n  new_lead: {\n    eventType: 'new_lead',\n    lead_id: 'LD-5521',\n    name: 'Daan Smit',\n    email: 'daan.smit.demo@example.com',\n    phone: \"'+31 6 9988 7766\",\n    source: 'Website contact form',\n    interest: 'Personal training packages'\n  }\n};\n\nreturn [{ json: fakeEvents[eventType] }];"
+      },
+      "id": "96533409-7f3e-40ca-a887-3751060a8682",
+      "name": "TEST DATA - Fake Virtuagym Event (Remove for Production)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -480,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.eventType }}",
+                    "rightValue": "trial_expired_no_membership",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Trial Expired"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.eventType }}",
+                    "rightValue": "no_checkin_14_days",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "No Check-in"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.eventType }}",
+                    "rightValue": "birthday_today",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Birthday"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.eventType }}",
+                    "rightValue": "new_member_onboarding",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "New Member"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.eventType }}",
+                    "rightValue": "membership_expiring_soon",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "Expiring Soon"
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict"
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.eventType }}",
+                    "rightValue": "new_lead",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              },
+              "renameOutput": true,
+              "outputKey": "New Lead"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "7469cfa9-958b-43a5-9c4d-d5246db912a1",
+      "name": "Event Router (Switch)",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -240,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A member's 7-day trial just ended and they have NOT purchased a membership.\n\nMember: {{ $json.name }}\nTrial period: {{ $json.trial_start_date }} to {{ $json.trial_end_date }}\n\nWrite a warm, persuasive but not pushy email encouraging them to convert to a membership. Include a time-limited incentive (e.g. 10% off first month, or a free PT session) to create urgency. Keep it friendly and personal, 120-150 words.\n\nRespond ONLY with the email body text, no subject line.",
+        "options": {
+          "systemMessage": "You are a friendly gym membership consultant who writes warm, persuasive but never pushy follow-up emails. You always sound human and personal, never corporate or robotic."
+        }
+      },
+      "id": "99d4f39c-f38b-4972-bcba-9726c8e02778",
+      "name": "AI: Generate Trial Conversion Offer",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "=Still thinking it over, {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.name }}? Here's something special",
+        "message": "={{ $json.output }}\n\n[TEST MODE - this email is routed to the developer's inbox. Switch to {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.email }} before going live.]",
+        "options": {}
+      },
+      "id": "0970d045-6c09-439c-a514-98a0444c576f",
+      "name": "Send: Trial Conversion Offer",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        336,
+        0
+      ],
+      "webhookId": "fd5d4b8b-80c8-4dea-bf70-0d679fc3192d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f1Oq6MkoxADFPWYh",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A gym member hasn't checked in for 14 days.\n\nMember: {{ $json.name }}\nMembership type: {{ $json.membership_type }}\nLast check-in: {{ $json.last_checkin_date }}\n\nWrite a short, caring (not guilt-tripping) email checking in on them, asking if everything is okay, and gently encouraging them to come back. Mention that their trainer/the gym team is there to help if life got busy or motivation dipped. Keep it warm and human, 100-130 words.\n\nRespond ONLY with the email body text, no subject line.",
+        "options": {
+          "systemMessage": "You are a caring gym community manager. You write check-in messages that feel genuinely concerned, never guilt-tripping or salesy."
+        }
+      },
+      "id": "8bac15aa-4bf1-45c6-a26a-e8576ce45f62",
+      "name": "AI: Generate Check-in Message",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        144
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "nawazmubshar387@gmail.com",
+        "subject": "=We miss you, {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.name }}!",
+        "message": "={{ $json.output }}\n\n[TEST MODE - this email is routed to the developer's inbox. Switch to {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.email }} before going live.]",
+        "options": {}
+      },
+      "id": "4486a87f-b8f3-4114-9ed2-faac7ae0a1ea",
+      "name": "Send: Check-in Message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        144
+      ],
+      "webhookId": "d80abf6e-8ae9-4bef-a4a2-9ce2f87a3697",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f1Oq6MkoxADFPWYh",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=It's a gym member's birthday today!\n\nMember: {{ $json.name }}\nMembership type: {{ $json.membership_type }}\n\nWrite a short, joyful, celebratory birthday email from the gym. Keep it light, fun, and genuine - not generic corporate birthday spam. Maybe include a small birthday treat idea (e.g. a free smoothie, a free guest pass for a friend). 80-100 words.\n\nRespond ONLY with the email body text, no subject line.",
+        "options": {
+          "systemMessage": "You are a warm, fun gym community manager who writes genuinely joyful birthday messages that feel personal, not like mass-marketing spam."
+        }
+      },
+      "id": "44fb6882-70b3-4307-9163-39da09436084",
+      "name": "AI: Generate Birthday Message",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        288
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "=Happy Birthday, {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.name }}!",
+        "message": "={{ $json.output }}\n\n[TEST MODE - this email is routed to the developer's inbox. Switch to {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.email }} before going live.]",
+        "options": {}
+      },
+      "id": "364dc995-baf0-4d33-8390-0db6cd8d67dc",
+      "name": "Send: Birthday Message",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        368,
+        288
+      ],
+      "webhookId": "d713eefc-8011-450f-972a-792ceef50d59",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f1Oq6MkoxADFPWYh",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A new member just joined the gym and needs an onboarding sequence kicked off.\n\nMember: {{ $json.name }}\nMembership: {{ $json.membership_type }}\nGoals: {{ $json.goals }}\n\nWrite a warm welcome email that: briefly welcomes them, mentions their stated goals to show it's personalized, gives 2-3 quick first-week tips, and invites them to book an orientation session with a trainer. 130-160 words.\n\nRespond ONLY with the email body text, no subject line.",
+        "options": {
+          "systemMessage": "You are a welcoming gym onboarding specialist. Your messages feel personal and make new members feel genuinely supported from day one."
+        }
+      },
+      "id": "46badea2-5c3f-4b5c-aab7-4abd04d41417",
+      "name": "AI: Generate Onboarding Welcome",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        432
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "nawazmubshar387@gmail.com",
+        "subject": "=Welcome aboard, {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.name }}!",
+        "message": "={{ $json.output }}\n\n[TEST MODE - this email is routed to the developer's inbox. Switch to {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.email }} before going live.]",
+        "options": {}
+      },
+      "id": "e96e8be2-5ee1-4f29-88f6-a7b66b5de5e5",
+      "name": "Send: Onboarding Welcome",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        560,
+        432
+      ],
+      "webhookId": "fa496cf1-5a36-4792-8693-078f7856810c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f1Oq6MkoxADFPWYh",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A member's gym membership is expiring soon and needs a renewal follow-up.\n\nMember: {{ $json.name }}\nMembership type: {{ $json.membership_type }}\nExpiry date: {{ $json.expiry_date }}\n\nWrite a friendly renewal reminder email. Mention the expiry date clearly, highlight the value they've gotten (keep it general/positive), and make renewing feel easy with a clear next step. Optionally mention a small loyalty incentive for renewing early. 110-140 words.\n\nRespond ONLY with the email body text, no subject line.",
+        "options": {
+          "systemMessage": "You are a retention-focused gym account manager. You write renewal reminders that feel helpful and appreciative, never alarming or pushy."
+        }
+      },
+      "id": "b9a1922c-2733-4ab8-ab59-f9e81a3f1a47",
+      "name": "AI: Generate Renewal Reminder",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        560
+      ]
+    },
+    {
+      "parameters": {
+        "sendTo": "nawazmubshar387@gmail.com",
+        "subject": "=Your membership expires soon, {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.name }}",
+        "message": "={{ $json.output }}\n\n[TEST MODE - this email is routed to the developer's inbox. Switch to {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.email }} before going live.]",
+        "options": {}
+      },
+      "id": "bec041a3-3714-459c-bc08-052d078af9fb",
+      "name": "Send: Renewal Reminder",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        400,
+        560
+      ],
+      "webhookId": "1663b984-c05f-4df5-a259-79a20b154e10",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f1Oq6MkoxADFPWYh",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=A new lead just came in and needs immediate contact.\n\nLead: {{ $json.name }}\nSource: {{ $json.source }}\nInterest: {{ $json.interest }}\n\nWrite a quick, friendly first-contact email. Thank them for their interest, briefly address their stated interest, and invite them to book a free trial session or call. Keep it short and easy to respond to, 90-120 words.\n\nRespond ONLY with the email body text, no subject line.",
+        "options": {
+          "systemMessage": "You are a responsive, friendly gym sales assistant. You write fast first-contact messages that feel personal and create an easy next step, never generic or salesy."
+        }
+      },
+      "id": "6b811ca1-ea02-4d2e-80ad-bd6ee37f840b",
+      "name": "AI: Generate New Lead Outreach",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [
+        0,
+        704
+      ]
+    },
+    {
+      "parameters": {
+        "subject": "=Thanks for your interest, {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.name }}!",
+        "message": "={{ $json.output }}\n\n[TEST MODE - this email is routed to the developer's inbox. Switch to {{ $('TEST DATA - Fake Virtuagym Event (Remove for Production)').item.json.email }} before going live.]",
+        "options": {}
+      },
+      "id": "ce95c9bd-41fe-4979-9b88-f3bb5acec7f3",
+      "name": "Send: New Lead Outreach",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        592,
+        720
+      ],
+      "webhookId": "39409835-70a8-41c2-bbe0-a3b889488eaf",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "f1Oq6MkoxADFPWYh",
+          "name": "Gmail account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama-3.3-70b-versatile",
+        "options": {}
+      },
+      "id": "6c9ed324-1032-4dd8-a8f6-966206b6b66e",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        -800,
+        624
+      ],
+      "credentials": {
+        "groqApi": {
+          "id": "A8pusniIKvFyxNwL",
+          "name": "Groq account 7"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook - Virtuagym Event": {
+      "main": [
+        [
+          {
+            "node": "TEST DATA - Fake Virtuagym Event (Remove for Production)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "TEST DATA - Fake Virtuagym Event (Remove for Production)": {
+      "main": [
+        [
+          {
+            "node": "Event Router (Switch)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Event Router (Switch)": {
+      "main": [
+        [
+          {
+            "node": "AI: Generate Trial Conversion Offer",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Generate Check-in Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Generate Birthday Message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Generate Onboarding Welcome",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Generate Renewal Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "AI: Generate New Lead Outreach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Trial Conversion Offer": {
+      "main": [
+        [
+          {
+            "node": "Send: Trial Conversion Offer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Check-in Message": {
+      "main": [
+        [
+          {
+            "node": "Send: Check-in Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Birthday Message": {
+      "main": [
+        [
+          {
+            "node": "Send: Birthday Message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Onboarding Welcome": {
+      "main": [
+        [
+          {
+            "node": "Send: Onboarding Welcome",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate Renewal Reminder": {
+      "main": [
+        [
+          {
+            "node": "Send: Renewal Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI: Generate New Lead Outreach": {
+      "main": [
+        [
+          {
+            "node": "Send: New Lead Outreach",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI: Generate Trial Conversion Offer",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI: Generate Check-in Message",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI: Generate Birthday Message",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI: Generate Onboarding Welcome",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI: Generate Renewal Reminder",
+            "type": "ai_languageModel",
+            "index": 0
+          },
+          {
+            "node": "AI: Generate New Lead Outreach",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "4bed7631-1bee-4748-a572-9c45adc01bcf",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "17c3d54b46a3702e6112a3cca58396f3167c03ea2410f87f18155a7a53c0026a"
+  },
+  "id": "LCQNFBEG9Mlf9lcO",
+  "tags": []
+}
