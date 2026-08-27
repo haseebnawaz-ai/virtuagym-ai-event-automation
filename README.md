@@ -6,7 +6,7 @@ An enterprise-grade, event-driven AI automation system built with **n8n** and **
 
 ## 📐 System Architecture
 
-![Workflow Architecture](./architecture.png)
+![System Architecture](./Virtuagym%20Event%20Automation%20Engine.jpg)
 
 ---
 
@@ -36,8 +36,8 @@ An enterprise-grade, event-driven AI automation system built with **n8n** and **
 
 ## 🚀 How to Import
 
-1. Download the `workflow.json` file from this repository.
+1. Download the JSON file from this repository.
 2. Open your **n8n** instance.
-3. Click **Workflows ➔ Import from File** and select `workflow.json`.
+3. Click **Workflows ➔ Import from File** and select the `.json` file.
 4. Configure your **Groq API Key** and **Gmail OAuth2 credentials** in the respective nodes.
 5. Activate the workflow and link your webhook endpoint to your CRM.
